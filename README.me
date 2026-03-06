@@ -9,21 +9,17 @@ An example of using a fully featured Argo, Helm, Kubernetes stack on minikube vi
 
 
 Apply steps -
-```
-kubectl apply -f ops/
-kubectl apply -f crossplane-resources/
-```
 
-This creates 26 pods in total on my local
+- `kubectl apply -f ops/`
+- `kubectl apply -f crossplane-resources/`
 
-```
- kubectl get pods -A --no-headers | awk '{print $1}' | sort | uniq -c                         [12:00:41]
-   7 argocd
-   5 crossplane-system
-   1 demo-nginx
-   7 kube-system
-   6 observability
-```
+This creates 26 pods in total on my local, feel free to check though:
+ `kubectl get pods -A --no-headers | awk '{print $1}' | sort | uniq -c`                        
+   * 7 argocd
+   * 5 crossplane-system
+   * 1 demo-nginx
+   * 7 kube-system
+   * 6 observability
 
 
 ## Launch argocd
