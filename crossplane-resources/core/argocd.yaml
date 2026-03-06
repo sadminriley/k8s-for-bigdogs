@@ -1,0 +1,16 @@
+apiVersion: kubernetes.crossplane.io/v1alpha2
+kind: Object
+metadata:
+  name: argocd
+spec:
+  forProvider:
+    manifest:
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: argocd
+        labels:
+          app: argocd
+          managed-by: crossplane
+  providerConfigRef:
+    name: local-cluster

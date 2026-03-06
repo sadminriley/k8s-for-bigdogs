@@ -1,0 +1,40 @@
+# k8s-for-bigdogs-examples
+## How to create your own IDP(internal developer platform) locally.
+
+This is what I run for local machine for testing reasons, interview practice,whatever it might be. There is not enough tutorials on using Crossplane locally, in my opinion. These are some of the things I use; and a couple of dead simple demos for now.
+
+An example of using a fully featured Argo, Helm, Kubernetes stack on minikube via crossplane. Woof woof. 🐕
+
+
+
+
+Apply steps -
+```
+kubectl apply -f ops/
+kubectl apply -f crossplane-resources/
+```
+
+This creates 26 pods in total on my local
+
+```
+ kubectl get pods -A --no-headers | awk '{print $1}' | sort | uniq -c                         [12:00:41]
+   7 argocd
+   5 crossplane-system
+   1 demo-nginx
+   7 kube-system
+   6 observability
+```
+
+
+## Launch argocd
+`kubectl port-forward -n argocd svc/argocd-server 8080:80`
+
+Get the password for the admin user and login
+`kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d`
+
+## Launch demo-nginx nginx platformapp example
+`kubectl port-forward -n demo-nginx svc/demo-nginx-<rest-of-pod> 8081:80`
+
+You should now be able to access the nginx instance at http://localhost:8081 and argocd at http://localhost:8080.
+
+For now, this is short short demo of how to use crossplane locally with minikube to create your own IDP(internal developer platform) and use argocd to deploy applications to it via platformapps and their manifests from git; and Crossplane composing them into your running app.

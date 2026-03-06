@@ -1,0 +1,32 @@
+apiVersion: helm.crossplane.io/v1beta1
+kind: Release
+metadata:
+  name: kube-prometheus-stack
+spec:
+  forProvider:
+    chart:
+      name: kube-prometheus-stack
+      repository: https://prometheus-community.github.io/helm-charts
+      version: "82.2.1"
+    namespace: observability
+    skipCreateNamespace: false
+    values:
+      prometheus:
+        prometheusSpec:
+          retention: 30d
+          storageSpec:
+            volumeClaimTemplate:
+              spec:
+                storageClassName: standard
+                resources:
+                  requests:
+                    storage: 10Gi
+      grafana:
+        enabled: true
+        adminPassword: password
+        service:
+          type: LoadBalancer
+        persistence:
+          enabled: false
+  providerConfigRef:
+    name: helm-provider

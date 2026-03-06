@@ -1,0 +1,24 @@
+apiVersion: helm.crossplane.io/v1beta1
+kind: Release
+metadata:
+  name: argocd
+spec:
+  forProvider:
+    chart:
+      name: argo-cd
+      repository: https://argoproj.github.io/argo-helm
+      version: "9.4.4"
+    namespace: argocd
+    skipCreateNamespace: true  # namespace is handled in ops/crossplane-resources/
+    values:
+      server:
+        service:
+          type: LoadBalancer
+        extraArgs:
+          - --insecure
+      applicationSet:
+        enabled: true
+    wait: true
+    waitTimeout: 600s
+  providerConfigRef:
+    name: helm-provider

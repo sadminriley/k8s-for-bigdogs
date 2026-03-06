@@ -1,0 +1,17 @@
+apiVersion: platform.stacksecure.io/v1alpha1
+kind: PlatformApp
+metadata:
+  name: demo-nginx
+spec:
+  parameters:
+    namespace: demo-nginx
+    chartName: nginx
+    chartRepository: https://charts.bitnami.com/bitnami
+    chartVersion: 18.1.15
+    values:
+      image:
+        registry: docker.io
+        repository: bitnami/nginx
+        tag: latest
+      service:
+        type: ClusterIP

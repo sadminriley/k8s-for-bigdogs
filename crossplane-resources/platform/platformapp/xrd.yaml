@@ -1,0 +1,44 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
+metadata:
+  name: xplatformapps.platform.stacksecure.io
+spec:
+  group: platform.stacksecure.io
+  names:
+    kind: XPlatformApp
+    plural: xplatformapps
+  claimNames:
+    kind: PlatformApp
+    plural: platformapps
+  versions:
+    - name: v1alpha1
+      served: true
+      referenceable: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                parameters:
+                  type: object
+                  properties:
+                    namespace:
+                      type: string
+                    chartName:
+                      type: string
+                    chartRepository:
+                      type: string
+                    chartVersion:
+                      type: string
+                    values:
+                      type: object
+                      x-kubernetes-preserve-unknown-fields: true
+                  required:
+                    - namespace
+                    - chartName
+                    - chartRepository
+                    - chartVersion
+              required:
+                - parameters
