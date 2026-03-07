@@ -32,6 +32,12 @@ spec:
                       type: string
                     chartVersion:
                       type: string
+                    image:
+                      type: string
+                    port:
+                      type: integer
+                    host:
+                      type: string
                     values:
                       type: object
                       x-kubernetes-preserve-unknown-fields: true
