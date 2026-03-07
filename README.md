@@ -46,3 +46,7 @@ For now, this is short short demo of how to use crossplane locally with minikube
 
 ## Minikube Dashboard
 `minikube dashboard`
+
+
+## What argo looks like when everything from the repo is synced as apps and runnning -
+![Argo](https://github.com/user-attachments/assets/79af4b68-2ab7-4d48-8714-b850138f62f8)
