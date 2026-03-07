@@ -1,5 +1,6 @@
 # k8s-for-bigdogs-examples
 ## How to create your own IDP(internal developer platform) locally.
+<img width="600" height="800" alt="chart_diagram" src="https://github.com/user-attachments/assets/fd2bb158-ce39-4b82-bc30-3fc4725805be" />
 
 This is what I run for local machine for testing reasons, interview practice,whatever it might be. There is not enough tutorials on using Crossplane locally, in my opinion. These are some of the things I use; and a couple of dead simple demos for now.
 
