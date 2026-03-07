@@ -5,14 +5,18 @@ metadata:
   namespace: demo-nginx
 spec:
   ingressClassName: nginx
+  tls:
+  - hosts:
+    - demo-nginx.test
+    secretName: demo-nginx-tls
   rules:
-    - host: demo-nginx.local
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: demo-nginx-7b8j7
-                port:
-                  number: 80
+  - host: demo-nginx.test
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: demo-nginx
+            port:
+              number: 80

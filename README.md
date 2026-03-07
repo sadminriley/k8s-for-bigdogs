@@ -14,7 +14,7 @@ Apply steps -
 - `kubectl apply -f crossplane-resources/`
 
 This creates 26 pods in total on my local, feel free to check though:
- `kubectl get pods -A --no-headers | awk '{print $1}' | sort | uniq -c`                        
+ `kubectl get pods -A --no-headers | awk '{print $1}' | sort | uniq -c`
    * 7 argocd
    * 5 crossplane-system
    * 1 demo-nginx
@@ -29,8 +29,20 @@ Get the password for the admin user and login
 `kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d`
 
 ## Launch demo-nginx nginx platformapp example
-`kubectl port-forward -n demo-nginx svc/demo-nginx-<rest-of-pod> 8081:80`
+`kubectl port-forward -n ingress-nginx svc/ingress-nginx-controller 8443:443` from the ingress rule + svc to access it from
+cert-manager port.
 
-You should now be able to access the nginx instance at http://localhost:8081 and argocd at http://localhost:8080.
+Add an entry locally in your hosts file for demo-nginx.local pointing to 120.0.01.
+
+Visit -
+
+https://demo-nginx.test:8443/
+
+You should see an nginx welcome page.
+
+You should now be able to access the nginx instance at https://demo-nginx.test:8443/ and argocd at http://localhost:8080.
 
 For now, this is short short demo of how to use crossplane locally with minikube to create your own IDP(internal developer platform) and use argocd to deploy applications to it via platformapps and their manifests from git; and Crossplane composing them into your running app.
+
+## Minikube Dashboard
+`minikube dashboard`

@@ -1,0 +1,13 @@
+apiVersion: platform.stacksecure.io/v1alpha1
+kind: PlatformApp
+metadata:
+  name: cert-manager
+spec:
+  parameters:
+    namespace: cert-manager
+    chartName: cert-manager
+    chartRepository: https://charts.jetstack.io
+    chartVersion: v1.17.2
+    values:
+      crds:
+        enabled: true

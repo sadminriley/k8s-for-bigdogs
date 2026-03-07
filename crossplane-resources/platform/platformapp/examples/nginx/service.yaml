@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: demo-nginx
+  namespace: demo-nginx
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 8080
+  selector:
+    app.kubernetes.io/instance: demo-nginx-7b8j7

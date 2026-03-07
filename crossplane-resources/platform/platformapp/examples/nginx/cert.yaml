@@ -1,0 +1,12 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: demo-nginx-cert
+  namespace: demo-nginx
+spec:
+  secretName: demo-nginx-tls
+  issuerRef:
+    name: selfsigned-issuer
+    kind: ClusterIssuer
+  dnsNames:
+  - demo-nginx.test
