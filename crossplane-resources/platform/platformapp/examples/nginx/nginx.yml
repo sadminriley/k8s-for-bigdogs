@@ -2,6 +2,7 @@ apiVersion: platform.stacksecure.io/v1alpha1
 kind: PlatformApp
 metadata:
   name: demo-nginx
+  namespace: demo-nginx
 spec:
   parameters:
     namespace: demo-nginx
