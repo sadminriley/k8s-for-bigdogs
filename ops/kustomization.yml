@@ -4,6 +4,7 @@ kind: Kustomization
 resources:
   - crossplane-provider/crossplane-ingress-rbac.yml
   - crossplane-provider/crossplane-namespace-rbac.yml
+  - crossplane-provider/crossplane-workload-rbac.yml
   - crossplane-provider/provider.yaml
   - crossplane-provider/providerconfig.yaml
   - helm/helm-config.yaml
