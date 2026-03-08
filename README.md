@@ -30,6 +30,7 @@ An example of using a fully featured Argo, Helm, Kubernetes stack on minikube vi
 - [Local Host Entries](#local-host-entries)
 - [Open URLs](#open-urls)
 - [Local CA + TLS setup](#local-ca--tls-setup)
+- [Component Usage Breakdown](#component-usage-breakdown)
 
 
 ## Components used
@@ -114,3 +115,20 @@ Then you can add the local-dev-ca.crt to your keychain, on a mac this works -
 `
 
 Restart your browser and you should be able to see all the URLs without any port-forwards.
+
+
+## Component Usage Breakdown
+
+### PlatformApp
+Deploys Helm charts as argocd apps.
+
+### PlatformWorkload
+Container Workload. Usually deployment + svc + ingress
+
+
+### PlatformDatabase
+Creates psql instance.
+
+### PlatformStack
+A bundle of PlatformApps and PlatformWorkloads. This is what you deploy to get a full stack of resources within k8s itself.
+aka, a bundle of a mutiple platform resources in this env.
