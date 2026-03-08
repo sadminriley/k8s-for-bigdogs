@@ -99,9 +99,8 @@ And sync argocd -
 
 ## Local Host Entries
 
-**127.0.0.1 argocd.dev
-127.0.0.1 demo-nginx.dev
-127.0.0.1 hello.dev**
+**127.0.0.1 argocd.dev demo-nginx.dev hello.dev**
+
 
 ## Open URLs
 https://argocd.dev
