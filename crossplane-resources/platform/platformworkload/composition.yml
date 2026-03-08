@@ -83,7 +83,7 @@ spec:
               spec:
                 secretName: app-tls
                 issuerRef:
-                  name: selfsigned-issuer
+                  name: local-ca-issuer
                   kind: ClusterIssuer
                 dnsNames:
                   - example.test

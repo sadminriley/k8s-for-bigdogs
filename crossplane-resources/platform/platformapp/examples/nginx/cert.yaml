@@ -6,7 +6,7 @@ metadata:
 spec:
   secretName: demo-nginx-tls
   issuerRef:
-    name: selfsigned-issuer
+    name: local-ca-issuer
     kind: ClusterIssuer
   dnsNames:
   - demo-nginx.dev
