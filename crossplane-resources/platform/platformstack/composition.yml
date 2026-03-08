@@ -32,6 +32,9 @@ spec:
                   port: 80
                   host: ""
                   issuerName: ""
+            readinessChecks:
+              - type: NonEmpty
+                fieldPath: status.conditions
             patches:
               - type: FromCompositeFieldPath
                 fromFieldPath: metadata.namespace
@@ -81,6 +84,9 @@ spec:
                   storage: ""
                   username: ""
                   password: ""
+            readinessChecks:
+              - type: NonEmpty
+                fieldPath: status.conditions
             patches:
               - type: FromCompositeFieldPath
                 fromFieldPath: metadata.namespace
