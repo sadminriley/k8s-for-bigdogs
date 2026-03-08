@@ -1,0 +1,119 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: platformstack-basic
+spec:
+  compositeTypeRef:
+    apiVersion: platform.stacksecure.io/v1alpha1
+    kind: XPlatformStack
+
+  mode: Pipeline
+
+  pipeline:
+    - step: patch-and-transform
+      functionRef:
+        name: function-patch-and-transform
+      input:
+        apiVersion: pt.fn.crossplane.io/v1beta1
+        kind: Resources
+        resources:
+          - name: stack-workload
+            base:
+              apiVersion: platform.stacksecure.io/v1alpha1
+              kind: PlatformWorkload
+              metadata:
+                name: ""
+                namespace: default
+              spec:
+                parameters:
+                  appName: ""
+                  namespace: ""
+                  image: ""
+                  port: 80
+                  host: ""
+                  issuerName: ""
+            patches:
+              - type: FromCompositeFieldPath
+                fromFieldPath: metadata.namespace
+                toFieldPath: metadata.namespace
+
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.appName
+                toFieldPath: metadata.name
+
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.appName
+                toFieldPath: spec.parameters.appName
+
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.namespace
+                toFieldPath: spec.parameters.namespace
+
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.image
+                toFieldPath: spec.parameters.image
+
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.port
+                toFieldPath: spec.parameters.port
+
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.host
+                toFieldPath: spec.parameters.host
+
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.issuerName
+                toFieldPath: spec.parameters.issuerName
+
+          - name: stack-database
+            base:
+              apiVersion: platform.stacksecure.io/v1alpha1
+              kind: PlatformDatabase
+              metadata:
+                name: ""
+                namespace: default
+              spec:
+                parameters:
+                  dbName: ""
+                  namespace: ""
+                  image: ""
+                  port: 5432
+                  storage: ""
+                  username: ""
+                  password: ""
+            patches:
+              - type: FromCompositeFieldPath
+                fromFieldPath: metadata.namespace
+                toFieldPath: metadata.namespace
+
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.dbName
+                toFieldPath: metadata.name
+
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.dbName
+                toFieldPath: spec.parameters.dbName
+
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.namespace
+                toFieldPath: spec.parameters.namespace
+
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.dbImage
+                toFieldPath: spec.parameters.image
+
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.dbPort
+                toFieldPath: spec.parameters.port
+
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.dbStorage
+                toFieldPath: spec.parameters.storage
+
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.dbUsername
+                toFieldPath: spec.parameters.username
+
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.dbPassword
+                toFieldPath: spec.parameters.password
