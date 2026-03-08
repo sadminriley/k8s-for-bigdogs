@@ -9,4 +9,4 @@ spec:
     name: selfsigned-issuer
     kind: ClusterIssuer
   dnsNames:
-  - demo-nginx.test
+  - demo-nginx.dev

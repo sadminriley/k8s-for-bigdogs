@@ -7,10 +7,10 @@ spec:
   ingressClassName: nginx
   tls:
   - hosts:
-    - demo-nginx.test
+    - demo-nginx.dev
     secretName: demo-nginx-tls
   rules:
-  - host: demo-nginx.test
+  - host: demo-nginx.dev
     http:
       paths:
       - path: /
