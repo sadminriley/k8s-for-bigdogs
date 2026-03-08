@@ -9,6 +9,10 @@ rules:
       - namespaces/status
       - services
       - services/status
+      - secrets
+      - secrets/status
+      - persistentvolumeclaims
+      - persistentvolumeclaims/status
     verbs:
       - get
       - list
