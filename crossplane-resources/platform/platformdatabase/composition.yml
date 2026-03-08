@@ -23,6 +23,8 @@ spec:
               kind: Namespace
               metadata:
                 name: default
+            readinessChecks:
+              - type: None
             patches:
               - type: FromCompositeFieldPath
                 fromFieldPath: spec.parameters.namespace
@@ -40,6 +42,8 @@ spec:
                 POSTGRES_USER: postgres
                 POSTGRES_PASSWORD: postgres
                 POSTGRES_DB: app
+            readinessChecks:
+              - type: None
             patches:
               - type: FromCompositeFieldPath
                 fromFieldPath: spec.parameters.dbName
@@ -49,19 +53,15 @@ spec:
                     string:
                       type: Format
                       fmt: "%s-secret"
-
               - type: FromCompositeFieldPath
                 fromFieldPath: spec.parameters.namespace
                 toFieldPath: metadata.namespace
-
               - type: FromCompositeFieldPath
                 fromFieldPath: spec.parameters.username
                 toFieldPath: stringData.POSTGRES_USER
-
               - type: FromCompositeFieldPath
                 fromFieldPath: spec.parameters.password
                 toFieldPath: stringData.POSTGRES_PASSWORD
-
               - type: FromCompositeFieldPath
                 fromFieldPath: spec.parameters.dbName
                 toFieldPath: stringData.POSTGRES_DB
@@ -79,6 +79,10 @@ spec:
                 resources:
                   requests:
                     storage: 1Gi
+            readinessChecks:
+              - type: MatchString
+                fieldPath: status.phase
+                matchString: Bound
             patches:
               - type: FromCompositeFieldPath
                 fromFieldPath: spec.parameters.dbName
@@ -88,11 +92,9 @@ spec:
                     string:
                       type: Format
                       fmt: "%s-pvc"
-
               - type: FromCompositeFieldPath
                 fromFieldPath: spec.parameters.namespace
                 toFieldPath: metadata.namespace
-
               - type: FromCompositeFieldPath
                 fromFieldPath: spec.parameters.storage
                 toFieldPath: spec.resources.requests.storage
@@ -129,35 +131,33 @@ spec:
                       - name: db-data
                         persistentVolumeClaim:
                           claimName: db-data
+            readinessChecks:
+              - type: MatchCondition
+                matchCondition:
+                  type: Available
+                  status: "True"
             patches:
               - type: FromCompositeFieldPath
                 fromFieldPath: spec.parameters.dbName
                 toFieldPath: metadata.name
-
               - type: FromCompositeFieldPath
                 fromFieldPath: spec.parameters.namespace
                 toFieldPath: metadata.namespace
-
               - type: FromCompositeFieldPath
                 fromFieldPath: spec.parameters.dbName
                 toFieldPath: spec.selector.matchLabels.app
-
               - type: FromCompositeFieldPath
                 fromFieldPath: spec.parameters.dbName
                 toFieldPath: spec.template.metadata.labels.app
-
               - type: FromCompositeFieldPath
                 fromFieldPath: spec.parameters.dbName
                 toFieldPath: spec.template.spec.containers[0].name
-
               - type: FromCompositeFieldPath
                 fromFieldPath: spec.parameters.image
                 toFieldPath: spec.template.spec.containers[0].image
-
               - type: FromCompositeFieldPath
                 fromFieldPath: spec.parameters.port
                 toFieldPath: spec.template.spec.containers[0].ports[0].containerPort
-
               - type: FromCompositeFieldPath
                 fromFieldPath: spec.parameters.dbName
                 toFieldPath: spec.template.spec.containers[0].envFrom[0].secretRef.name
@@ -166,7 +166,6 @@ spec:
                     string:
                       type: Format
                       fmt: "%s-secret"
-
               - type: FromCompositeFieldPath
                 fromFieldPath: spec.parameters.dbName
                 toFieldPath: spec.template.spec.volumes[0].persistentVolumeClaim.claimName
@@ -190,23 +189,21 @@ spec:
                 ports:
                   - port: 5432
                     targetPort: 5432
+            readinessChecks:
+              - type: None
             patches:
               - type: FromCompositeFieldPath
                 fromFieldPath: spec.parameters.dbName
                 toFieldPath: metadata.name
-
               - type: FromCompositeFieldPath
                 fromFieldPath: spec.parameters.namespace
                 toFieldPath: metadata.namespace
-
               - type: FromCompositeFieldPath
                 fromFieldPath: spec.parameters.dbName
                 toFieldPath: spec.selector.app
-
               - type: FromCompositeFieldPath
                 fromFieldPath: spec.parameters.port
                 toFieldPath: spec.ports[0].port
-
               - type: FromCompositeFieldPath
                 fromFieldPath: spec.parameters.port
                 toFieldPath: spec.ports[0].targetPort
