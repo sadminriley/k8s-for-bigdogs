@@ -1,0 +1,50 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
+metadata:
+  name: xplatformdatabases.platform.stacksecure.io
+spec:
+  group: platform.stacksecure.io
+  names:
+    kind: XPlatformDatabase
+    plural: xplatformdatabases
+  claimNames:
+    kind: PlatformDatabase
+    plural: platformdatabases
+  versions:
+    - name: v1alpha1
+      served: true
+      referenceable: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                parameters:
+                  type: object
+                  properties:
+                    dbName:
+                      type: string
+                    namespace:
+                      type: string
+                    image:
+                      type: string
+                    port:
+                      type: integer
+                    storage:
+                      type: string
+                    username:
+                      type: string
+                    password:
+                      type: string
+                  required:
+                    - dbName
+                    - namespace
+                    - image
+                    - port
+                    - storage
+                    - username
+                    - password
+              required:
+                - parameters
