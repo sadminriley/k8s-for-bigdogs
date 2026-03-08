@@ -1,0 +1,65 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
+metadata:
+  name: xplatformstacks.platform.stacksecure.io
+spec:
+  group: platform.stacksecure.io
+  names:
+    kind: XPlatformStack
+    plural: xplatformstacks
+  claimNames:
+    kind: PlatformStack
+    plural: platformstacks
+  versions:
+    - name: v1alpha1
+      served: true
+      referenceable: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                parameters:
+                  type: object
+                  properties:
+                    appName:
+                      type: string
+                    namespace:
+                      type: string
+                    image:
+                      type: string
+                    port:
+                      type: integer
+                    host:
+                      type: string
+                    issuerName:
+                      type: string
+                    dbName:
+                      type: string
+                    dbImage:
+                      type: string
+                    dbPort:
+                      type: integer
+                    dbStorage:
+                      type: string
+                    dbUsername:
+                      type: string
+                    dbPassword:
+                      type: string
+                  required:
+                    - appName
+                    - namespace
+                    - image
+                    - port
+                    - host
+                    - issuerName
+                    - dbName
+                    - dbImage
+                    - dbPort
+                    - dbStorage
+                    - dbUsername
+                    - dbPassword
+              required:
+                - parameters
