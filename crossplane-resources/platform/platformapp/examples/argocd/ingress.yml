@@ -19,10 +19,10 @@ spec:
         ingressClassName: nginx
         tls:
           - hosts:
-              - argocd.test
+              - argocd.dev
             secretName: argocd-server-tls
         rules:
-          - host: argocd.test
+          - host: argocd.dev
             http:
               paths:
                 - path: /
