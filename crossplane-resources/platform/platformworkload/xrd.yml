@@ -34,6 +34,10 @@ spec:
                       type: integer
                     host:
                       type: string
+                    tlsEnabled:
+                      type: boolean
+                    issuerName:
+                      type: string
                   required:
                     - appName
                     - namespace

@@ -54,30 +54,65 @@ spec:
               - type: FromCompositeFieldPath
                 fromFieldPath: spec.parameters.appName
                 toFieldPath: metadata.name
-
               - type: FromCompositeFieldPath
                 fromFieldPath: spec.parameters.namespace
                 toFieldPath: metadata.namespace
-
               - type: FromCompositeFieldPath
                 fromFieldPath: spec.parameters.appName
                 toFieldPath: spec.selector.matchLabels.app
-
               - type: FromCompositeFieldPath
                 fromFieldPath: spec.parameters.appName
                 toFieldPath: spec.template.metadata.labels.app
-
               - type: FromCompositeFieldPath
                 fromFieldPath: spec.parameters.appName
                 toFieldPath: spec.template.spec.containers[0].name
-
               - type: FromCompositeFieldPath
                 fromFieldPath: spec.parameters.image
                 toFieldPath: spec.template.spec.containers[0].image
-
               - type: FromCompositeFieldPath
                 fromFieldPath: spec.parameters.port
                 toFieldPath: spec.template.spec.containers[0].ports[0].containerPort
+
+          - name: app-certificate
+            base:
+              apiVersion: cert-manager.io/v1
+              kind: Certificate
+              metadata:
+                name: app-cert
+                namespace: default
+              spec:
+                secretName: app-tls
+                issuerRef:
+                  name: selfsigned-issuer
+                  kind: ClusterIssuer
+                dnsNames:
+                  - example.test
+            patches:
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.appName
+                toFieldPath: metadata.name
+                transforms:
+                  - type: string
+                    string:
+                      type: Format
+                      fmt: "%s-cert"
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.namespace
+                toFieldPath: metadata.namespace
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.appName
+                toFieldPath: spec.secretName
+                transforms:
+                  - type: string
+                    string:
+                      type: Format
+                      fmt: "%s-tls"
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.issuerName
+                toFieldPath: spec.issuerRef.name
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.host
+                toFieldPath: spec.dnsNames[0]
 
           - name: app-service
             base:
@@ -97,19 +132,15 @@ spec:
               - type: FromCompositeFieldPath
                 fromFieldPath: spec.parameters.appName
                 toFieldPath: metadata.name
-
               - type: FromCompositeFieldPath
                 fromFieldPath: spec.parameters.namespace
                 toFieldPath: metadata.namespace
-
               - type: FromCompositeFieldPath
                 fromFieldPath: spec.parameters.appName
                 toFieldPath: spec.selector.app
-
               - type: FromCompositeFieldPath
                 fromFieldPath: spec.parameters.port
                 toFieldPath: spec.ports[0].port
-
               - type: FromCompositeFieldPath
                 fromFieldPath: spec.parameters.port
                 toFieldPath: spec.ports[0].targetPort
@@ -123,6 +154,10 @@ spec:
                 namespace: default
               spec:
                 ingressClassName: nginx
+                tls:
+                  - hosts:
+                      - example.test
+                    secretName: app-tls
                 rules:
                   - host: example.test
                     http:
@@ -138,19 +173,26 @@ spec:
               - type: FromCompositeFieldPath
                 fromFieldPath: spec.parameters.appName
                 toFieldPath: metadata.name
-
               - type: FromCompositeFieldPath
                 fromFieldPath: spec.parameters.namespace
                 toFieldPath: metadata.namespace
-
               - type: FromCompositeFieldPath
                 fromFieldPath: spec.parameters.host
                 toFieldPath: spec.rules[0].host
-
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.host
+                toFieldPath: spec.tls[0].hosts[0]
               - type: FromCompositeFieldPath
                 fromFieldPath: spec.parameters.appName
                 toFieldPath: spec.rules[0].http.paths[0].backend.service.name
-
               - type: FromCompositeFieldPath
                 fromFieldPath: spec.parameters.port
                 toFieldPath: spec.rules[0].http.paths[0].backend.service.port.number
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.appName
+                toFieldPath: spec.tls[0].secretName
+                transforms:
+                  - type: string
+                    string:
+                      type: Format
+                      fmt: "%s-tls"
