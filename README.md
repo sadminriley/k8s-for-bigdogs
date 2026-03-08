@@ -4,12 +4,34 @@
 
 This is what I run for local machine for testing reasons, interview practice,whatever it might be. There is not enough tutorials on using Crossplane locally, in my opinion. These are some of the things I use; and a couple of dead simple demos for now.
 
+
+This gives you a real, and very usable IDP where Argo deploys your platform resources from Github and Crossplane composes them into
+your actual workloads.
+
+Argo syncs everything from Git, and Crossplane builds the actual k8s resources.
+
 An example of using a fully featured Argo, Helm, Kubernetes stack on minikube via crossplane. Woof woof. 🐕
 
 
+[Example Crossplane Apps Repo](https://github.com/sadminriley/k8s-for-bigdogs-apps)
 
 
-Apply steps -
+
+
+## Components used
+- minikube
+- Crossplane
+- ArgoCD
+- cert-manager
+- nginx-ingress
+- helm
+- prometheus-kube-stack
+
+
+
+## Setup
+
+### Initial Manual Apply Steps
 
 - `kubectl apply -f ops/`
 - `kubectl apply -f crossplane-resources/`
@@ -24,14 +46,10 @@ This creates 26 pods in total on my local, feel free to check though:
 
 
 ## Launch argocd
-`kubectl port-forward -n argocd svc/argocd-server 8080:80`
 
 Get the password for the admin user and login
 `kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d`
 
-## Launch demo-nginx nginx platformapp example
-`kubectl port-forward -n ingress-nginx svc/ingress-nginx-controller 8443:443` from the ingress rule + svc to access it from
-cert-manager port.
 
 Add an entry locally in your hosts file for demo-nginx.local pointing to 120.0.01.
 
@@ -48,10 +66,6 @@ For now, this is short short demo of how to use crossplane locally with minikube
 ## Minikube Dashboard
 `minikube dashboard`
 
-
-[Example Crossplane Apps Repo](https://github.com/sadminriley/k8s-for-bigdogs-apps)
-
-
 ## What argo looks like when everything from the repo is synced as apps and runnning -
 ![Argo](https://github.com/user-attachments/assets/79af4b68-2ab7-4d48-8714-b850138f62f8)
 
@@ -65,12 +79,40 @@ Do not use the minikube addon, for consistency in hostnames manage it in argo.
 `minikube dashboard`
 
 
-## Start or Build the stack
+## Start or Build the stack(after you've done the initial manual apply step, you don't need to
+ After you've done the initial manual apply step, you won't need to do it again.
 `minikube start`
-`argo sync`
+And sync argocd -
+`argocd sync`
 
+
+## Local Host Entries
+
+**127.0.0.1 argocd.dev
+127.0.0.1 demo-nginx.dev
+127.0.0.1 hello.dev**
 
 ## Open URLs
 https://argocd.dev
 https://demo-nginx.dev
 https://hello.dev
+
+
+
+# Local CA + TLS setup
+The CA gets installed into your macOS keychain so browsers can trust the cluster domains.
+`
+kubectl get secret local-dev-ca-secret \
+  -n cert-manager \
+  -o jsonpath='{.data.tls\.crt}' | base64 -d > local-dev-ca.crt
+`
+
+Then you can add the local-dev-ca.crt to your keychain, on a mac this works -
+`sudo security add-trusted-cert \
+  -d \
+  -r trustRoot \
+  -k /Library/Keychains/System.keychain \
+  local-dev-ca.crt
+`
+
+Restart your browser and you should be able to see all the URLs without any port-forwards.
