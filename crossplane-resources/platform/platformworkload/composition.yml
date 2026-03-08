@@ -23,6 +23,8 @@ spec:
               kind: Namespace
               metadata:
                 name: default
+            readinessChecks:
+              - type: None
             patches:
               - type: FromCompositeFieldPath
                 fromFieldPath: spec.parameters.namespace
@@ -50,6 +52,11 @@ spec:
                         image: nginx:alpine
                         ports:
                           - containerPort: 80
+            readinessChecks:
+              - type: MatchCondition
+                matchCondition:
+                  type: Available
+                  status: "True"
             patches:
               - type: FromCompositeFieldPath
                 fromFieldPath: spec.parameters.appName
@@ -87,6 +94,11 @@ spec:
                   kind: ClusterIssuer
                 dnsNames:
                   - example.test
+            readinessChecks:
+              - type: MatchCondition
+                matchCondition:
+                  type: Ready
+                  status: "True"
             patches:
               - type: FromCompositeFieldPath
                 fromFieldPath: spec.parameters.appName
@@ -128,6 +140,8 @@ spec:
                 ports:
                   - port: 80
                     targetPort: 80
+            readinessChecks:
+              - type: None
             patches:
               - type: FromCompositeFieldPath
                 fromFieldPath: spec.parameters.appName
@@ -169,6 +183,8 @@ spec:
                               name: app
                               port:
                                 number: 80
+            readinessChecks:
+              - type: None
             patches:
               - type: FromCompositeFieldPath
                 fromFieldPath: spec.parameters.appName

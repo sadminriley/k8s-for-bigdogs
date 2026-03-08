@@ -22,7 +22,7 @@ An example of using a fully featured Argo, Helm, Kubernetes stack on minikube vi
 - [Components used](#components-used)
 - [Setup](#setup)
 - [Manual apply steps](#manual-apply-steps)
-- [Launch argocd](#launch-argocd)
+- [Login to ArgoCD](#login-to-argocd)
 - [Minikube Dashboard](#minikube-dashboard)
 - [What Argo looks like](#what-argo-looks-like-when-everything-from-the-repo-is-synced-as-apps-and-runnning)
 - [Minikube commands](#minikube-cmds)
@@ -57,23 +57,11 @@ This creates 26 pods in total on my local, feel free to check though:
    * 6 observability
 
 
-## Launch argocd
+## Login to ArgoCd
 
 Get the password for the admin user and login
 `kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d`
 
-
-Add an entry locally in your hosts file for demo-nginx.local pointing to 120.0.01.
-
-Visit -
-
-https://demo-nginx.test:8443/
-
-You should see an nginx welcome page.
-
-You should now be able to access the nginx instance at https://demo-nginx.test:8443/ and argocd at http://localhost:8080.
-
-For now, this is short short demo of how to use crossplane locally with minikube to create your own IDP(internal developer platform) and use argocd to deploy applications to it via platformapps and their manifests from git; and Crossplane composing them into your running app.
 
 ## Minikube Dashboard
 `minikube dashboard`
