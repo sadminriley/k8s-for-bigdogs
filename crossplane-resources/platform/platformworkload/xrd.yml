@@ -1,0 +1,44 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
+metadata:
+  name: xplatformworkloads.platform.stacksecure.io
+spec:
+  group: platform.stacksecure.io
+  names:
+    kind: XPlatformWorkload
+    plural: xplatformworkloads
+  claimNames:
+    kind: PlatformWorkload
+    plural: platformworkloads
+  versions:
+    - name: v1alpha1
+      served: true
+      referenceable: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                parameters:
+                  type: object
+                  properties:
+                    appName:
+                      type: string
+                    namespace:
+                      type: string
+                    image:
+                      type: string
+                    port:
+                      type: integer
+                    host:
+                      type: string
+                  required:
+                    - appName
+                    - namespace
+                    - image
+                    - port
+                    - host
+              required:
+                - parameters

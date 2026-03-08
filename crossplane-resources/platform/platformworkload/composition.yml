@@ -1,0 +1,156 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: platformworkload-basic
+spec:
+  compositeTypeRef:
+    apiVersion: platform.stacksecure.io/v1alpha1
+    kind: XPlatformWorkload
+
+  mode: Pipeline
+
+  pipeline:
+    - step: patch-and-transform
+      functionRef:
+        name: function-patch-and-transform
+      input:
+        apiVersion: pt.fn.crossplane.io/v1beta1
+        kind: Resources
+        resources:
+          - name: app-namespace
+            base:
+              apiVersion: v1
+              kind: Namespace
+              metadata:
+                name: default
+            patches:
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.namespace
+                toFieldPath: metadata.name
+
+          - name: app-deployment
+            base:
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: app
+                namespace: default
+              spec:
+                replicas: 1
+                selector:
+                  matchLabels:
+                    app: app
+                template:
+                  metadata:
+                    labels:
+                      app: app
+                  spec:
+                    containers:
+                      - name: app
+                        image: nginx:alpine
+                        ports:
+                          - containerPort: 80
+            patches:
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.appName
+                toFieldPath: metadata.name
+
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.namespace
+                toFieldPath: metadata.namespace
+
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.appName
+                toFieldPath: spec.selector.matchLabels.app
+
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.appName
+                toFieldPath: spec.template.metadata.labels.app
+
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.appName
+                toFieldPath: spec.template.spec.containers[0].name
+
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.image
+                toFieldPath: spec.template.spec.containers[0].image
+
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.port
+                toFieldPath: spec.template.spec.containers[0].ports[0].containerPort
+
+          - name: app-service
+            base:
+              apiVersion: v1
+              kind: Service
+              metadata:
+                name: app
+                namespace: default
+              spec:
+                type: ClusterIP
+                selector:
+                  app: app
+                ports:
+                  - port: 80
+                    targetPort: 80
+            patches:
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.appName
+                toFieldPath: metadata.name
+
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.namespace
+                toFieldPath: metadata.namespace
+
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.appName
+                toFieldPath: spec.selector.app
+
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.port
+                toFieldPath: spec.ports[0].port
+
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.port
+                toFieldPath: spec.ports[0].targetPort
+
+          - name: app-ingress
+            base:
+              apiVersion: networking.k8s.io/v1
+              kind: Ingress
+              metadata:
+                name: app
+                namespace: default
+              spec:
+                ingressClassName: nginx
+                rules:
+                  - host: example.test
+                    http:
+                      paths:
+                        - path: /
+                          pathType: Prefix
+                          backend:
+                            service:
+                              name: app
+                              port:
+                                number: 80
+            patches:
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.appName
+                toFieldPath: metadata.name
+
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.namespace
+                toFieldPath: metadata.namespace
+
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.host
+                toFieldPath: spec.rules[0].host
+
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.appName
+                toFieldPath: spec.rules[0].http.paths[0].backend.service.name
+
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.port
+                toFieldPath: spec.rules[0].http.paths[0].backend.service.port.number
