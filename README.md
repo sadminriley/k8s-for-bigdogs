@@ -51,3 +51,14 @@ For now, this is short short demo of how to use crossplane locally with minikube
 
 ## What argo looks like when everything from the repo is synced as apps and runnning -
 ![Argo](https://github.com/user-attachments/assets/79af4b68-2ab7-4d48-8714-b850138f62f8)
+
+
+
+## All port-forward commands until I make them into ingress rules/svc -
+Prometheus - `kubectl port-forward -n observability svc/kube-prometheus-stack-prometheus 9090:9090`
+Argo - `kubectl port-forward -n argocd svc/argocd-server 8081:80`
+Ingress for demo - `kubectl port-forward -n ingress-nginx svc/ingress-nginx-controller 8082:80`
+
+### minikube cmds
+`minikube tunnel`
+`minikube dashboard`
