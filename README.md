@@ -69,3 +69,8 @@ Do not use the minikube addon, for consistency in hostnames manage it in argo.
 `minikube start`
 `argo sync`
 
+
+## Open URLs
+https://argocd.dev
+https://demo-nginx.dev
+https://hello.dev
