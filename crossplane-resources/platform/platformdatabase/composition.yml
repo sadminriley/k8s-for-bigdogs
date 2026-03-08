@@ -1,0 +1,212 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: platformdatabase-basic
+spec:
+  compositeTypeRef:
+    apiVersion: platform.stacksecure.io/v1alpha1
+    kind: XPlatformDatabase
+
+  mode: Pipeline
+
+  pipeline:
+    - step: patch-and-transform
+      functionRef:
+        name: function-patch-and-transform
+      input:
+        apiVersion: pt.fn.crossplane.io/v1beta1
+        kind: Resources
+        resources:
+          - name: db-namespace
+            base:
+              apiVersion: v1
+              kind: Namespace
+              metadata:
+                name: default
+            patches:
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.namespace
+                toFieldPath: metadata.name
+
+          - name: db-secret
+            base:
+              apiVersion: v1
+              kind: Secret
+              metadata:
+                name: db-secret
+                namespace: default
+              type: Opaque
+              stringData:
+                POSTGRES_USER: postgres
+                POSTGRES_PASSWORD: postgres
+                POSTGRES_DB: app
+            patches:
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.dbName
+                toFieldPath: metadata.name
+                transforms:
+                  - type: string
+                    string:
+                      type: Format
+                      fmt: "%s-secret"
+
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.namespace
+                toFieldPath: metadata.namespace
+
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.username
+                toFieldPath: stringData.POSTGRES_USER
+
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.password
+                toFieldPath: stringData.POSTGRES_PASSWORD
+
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.dbName
+                toFieldPath: stringData.POSTGRES_DB
+
+          - name: db-pvc
+            base:
+              apiVersion: v1
+              kind: PersistentVolumeClaim
+              metadata:
+                name: db-data
+                namespace: default
+              spec:
+                accessModes:
+                  - ReadWriteOnce
+                resources:
+                  requests:
+                    storage: 1Gi
+            patches:
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.dbName
+                toFieldPath: metadata.name
+                transforms:
+                  - type: string
+                    string:
+                      type: Format
+                      fmt: "%s-pvc"
+
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.namespace
+                toFieldPath: metadata.namespace
+
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.storage
+                toFieldPath: spec.resources.requests.storage
+
+          - name: db-deployment
+            base:
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: db
+                namespace: default
+              spec:
+                replicas: 1
+                selector:
+                  matchLabels:
+                    app: db
+                template:
+                  metadata:
+                    labels:
+                      app: db
+                  spec:
+                    containers:
+                      - name: postgres
+                        image: postgres:16
+                        ports:
+                          - containerPort: 5432
+                        envFrom:
+                          - secretRef:
+                              name: db-secret
+                        volumeMounts:
+                          - name: db-data
+                            mountPath: /var/lib/postgresql/data
+                    volumes:
+                      - name: db-data
+                        persistentVolumeClaim:
+                          claimName: db-data
+            patches:
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.dbName
+                toFieldPath: metadata.name
+
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.namespace
+                toFieldPath: metadata.namespace
+
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.dbName
+                toFieldPath: spec.selector.matchLabels.app
+
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.dbName
+                toFieldPath: spec.template.metadata.labels.app
+
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.dbName
+                toFieldPath: spec.template.spec.containers[0].name
+
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.image
+                toFieldPath: spec.template.spec.containers[0].image
+
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.port
+                toFieldPath: spec.template.spec.containers[0].ports[0].containerPort
+
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.dbName
+                toFieldPath: spec.template.spec.containers[0].envFrom[0].secretRef.name
+                transforms:
+                  - type: string
+                    string:
+                      type: Format
+                      fmt: "%s-secret"
+
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.dbName
+                toFieldPath: spec.template.spec.volumes[0].persistentVolumeClaim.claimName
+                transforms:
+                  - type: string
+                    string:
+                      type: Format
+                      fmt: "%s-pvc"
+
+          - name: db-service
+            base:
+              apiVersion: v1
+              kind: Service
+              metadata:
+                name: db
+                namespace: default
+              spec:
+                type: ClusterIP
+                selector:
+                  app: db
+                ports:
+                  - port: 5432
+                    targetPort: 5432
+            patches:
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.dbName
+                toFieldPath: metadata.name
+
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.namespace
+                toFieldPath: metadata.namespace
+
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.dbName
+                toFieldPath: spec.selector.app
+
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.port
+                toFieldPath: spec.ports[0].port
+
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.port
+                toFieldPath: spec.ports[0].targetPort
