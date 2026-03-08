@@ -17,6 +17,22 @@ An example of using a fully featured Argo, Helm, Kubernetes stack on minikube vi
 
 
 
+## Index
+
+- [Components used](#components-used)
+- [Setup](#setup)
+- [Manual apply steps](#manual-apply-steps)
+- [Launch argocd](#launch-argocd)
+- [Minikube Dashboard](#minikube-dashboard)
+- [What Argo looks like](#what-argo-looks-like-when-everything-from-the-repo-is-synced-as-apps-and-runnning)
+- [Minikube commands](#minikube-cmds)
+- [Start or Build the stack](#start-or-build-the-stack)
+- [Local Host Entries](#local-host-entries)
+- [Open URLs](#open-urls)
+- [Local CA + TLS setup](#local-ca--tls-setup)
+
+
+
 
 ## Components used
 - minikube
@@ -26,8 +42,6 @@ An example of using a fully featured Argo, Helm, Kubernetes stack on minikube vi
 - nginx-ingress
 - helm
 - prometheus-kube-stack
-
-
 
 ## Setup
 
