@@ -46,6 +46,14 @@ An example of using a fully featured Argo, Helm, Kubernetes stack on minikube vi
 
 ### Initial Manual Apply Steps
 
+```
+helm install crossplane \
+  crossplane-stable/crossplane \
+  --namespace crossplane-system \
+  --create-namespace
+
+```
+
 - `kubectl apply -f ops/`
 - `kubectl apply -f crossplane-resources/`
 
@@ -100,11 +108,7 @@ https://hello.dev
 
 # Local CA + TLS setup
 The CA gets installed into your macOS keychain so browsers can trust the cluster domains.
-`
-kubectl get secret local-dev-ca-secret \
-  -n cert-manager \
-  -o jsonpath='{.data.tls\.crt}' | base64 -d > local-dev-ca.crt
-`
+`kubectl get secret local-dev-ca-secret -n cert-manager -o jsonpath='{.data.tls\.crt}' | base64 -d > local-dev-ca.crt`
 
 Then you can add the local-dev-ca.crt to your keychain, on a mac this works -
 `sudo security add-trusted-cert \
